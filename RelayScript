@@ -80,4 +80,3 @@ echo "Exitpolicy reject *:*" >> /usr/local/etc/tor/torrc
 #Contact info for Relay
 read -p "Enter your contact info for your relay: " Info
 echo "ContactInfo $Info" >> /usr/local/etc/tor/torrc
-
