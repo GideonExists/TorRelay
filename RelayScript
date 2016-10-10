@@ -75,7 +75,22 @@ echo "Address $Address" >> /usr/local/etc/tor/torrc
 
 #Exit policy for Relay
 echo "By default we do not allow exit policies for relays (this content is static.)"
-echo "Exitpolicy reject *:*" >> /usr/local/etc/tor/torrc
+echo "Should this node be an exit node? (y,n)" REPLY
+
+if [ "${REPLY,,}" == "y" ]; then
+	
+	echo "ExitPolicy accept 172.16.0.0/16:*" >> /usr/local/etc/tor/torrc
+	echo "ExitPolicy accept 172.17.0.0/16:*" >> /usr/local/etc/tor/torrc
+	echo "ExitPolicy accept 172.18.0.0/16:*" >> /usr/local/etc/tor/torrc
+	echo "ExitPolicy accept 172.19.0.0/16:*" >> /usr/local/etc/tor/torrc
+	echo "ExitPolicy accept [::1]:*" >> /usr/local/etc/tor/torrc
+	echo "IPv6Exit 1" >> /usr/local/etc/tor/torrc
+fi
+
+if [ "${REPLY,,}" == "n" ]; then
+	
+	echo "ExitPolicy reject *:*" >> /usr/local/etc/tor/torrc
+fi
 
 #Contact info for Relay
 read -p "Enter your contact info for your relay: " Info
