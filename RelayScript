@@ -35,6 +35,9 @@ if [ "${REPLY,,}" == "y" ]; then
 	touch /usr/local/etc/tor
 fi
 
+#Create router keys for unique identification by directories
+tor --list-fingerprint --orport 1 --dirserver "x 127.0.0.1:1 ffffffffffffffffffffffffffffffffffffffff" --datadirectory /var/lib/tor/
+
 #Set network as testing network and data directory
 echo "TestingTorNetwork 1" >> /usr/local/etc/tor/torrc
 echo "DataDirectory /var/lib/tor" >> /usr/local/etc/tor/torrc
@@ -60,6 +63,10 @@ echo "DirAuthority AlphaAuthority orport=5000 v3ident=2EF7C664175169357F94D8EC43
 echo "DirAuthority BravoAuthority orport=5001 v3ident=EA1091EE800157C15E54D94207721DAB6B975EA2 172.17.0.101:7001 D2FC20D645D392E2F930899BE0DDB370F735A04A" >> /usr/local/etc/tor/torrc
 echo "DirAuthority CharlieAuthority orport=5002 v3ident=DF9F0F13D1C88E69C17E4956D5306D9246B15999 172.18.0.101:7002 E848FCF17605E4238716F13CC90EF26338330CF1" >> /usr/local/etc/tor/torrc
 echo "DirAuthority DeltaAuthority bridge orport=5003 v3ident=808E16F28AA1EA7F7203863A8245364E4436CB37 172.19.0.101:7003 22449978C1AE15D0B40C0036AB33CCA2C6C1609A" >> /usr/local/etc/tor/torrc
+
+#SOCKS port for Relay if being used to allow connection by SOCKS applications
+read -p "Enter the port number for SOCKS application connections to the relay: " SocksPort
+echo "SocksPort $SocksPort" >> /usr/local/etc/tor/torrc
 
 #ORPORT for Relay
 read -p "Enter the port number you want ORPort to look at: " ORPort
