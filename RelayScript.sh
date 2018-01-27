@@ -5,7 +5,7 @@
 read -p "We need to get the dependencies for TOR (y,n) " REPLY
 echo "Installing necessary dependencies..."
 if [ "${REPLY,,}" == "y" ]; then
-	
+
 	apt-get --force-yes install libevent-dev
 	apt-get --force-yes install libssl-dev
 
@@ -15,11 +15,7 @@ fi
 #read -p "We need to update/upgrade the system (y,n) " REPLY
 
 if [ "${REPLY,,}" == "y" ]; then
-	
 	apt-get update
-
-#	apt-get dist-upgrade
-#fi
 
 #Check for presence of dirauth.csv before installing tor and creating torrc
 [ ! -f dirauth.csv ] && { echo "dirauth.csv not found in local directory"; exit 1; }
@@ -28,7 +24,7 @@ if [ "${REPLY,,}" == "y" ]; then
 read -p "Do you want to install Tor? (MAKE SURE YOU'RE 100% SURE ABOUT THIS! (y,n)" REPLY
 
 if [ "${REPLY,,}" == "y" ]; then
-	
+
 	cd ~/home/Downloads/
 	wget "https://www.torproject.org/dist/tor-0.3.2.9.tar.gz"
 	tar -zxvf tor-0.3.2.9.tar.gz
@@ -36,6 +32,7 @@ if [ "${REPLY,,}" == "y" ]; then
 	./configure && make && make install
 	mkdir /var/lib/tor
 	touch /usr/local/etc/tor
+
 fi
 
 #Create router keys for unique identification by directories
@@ -61,17 +58,13 @@ echo "SafeLogging 0" >> /usr/local/etc/tor/torrc
 echo "DisableDebuggerAttachment 0" >> /usr/local/etc/tor/torrc
 
 #Add directory authorities to torrc
-echo "Adding private directory authorities..."
-echo "DirAuthority AlphaAuthority orport=5000 v3ident=2EF7C664175169357F94D8EC43C1309ABF38DC2E 172.16.0.104:7000 908261E3EE00136095B176611317D25441FB65A0" >> /usr/local/etc/tor/torrc
-echo "DirAuthority BravoAuthority orport=5001 v3ident=EA1091EE800157C15E54D94207721DAB6B975EA2 172.17.0.101:7001 D2FC20D645D392E2F930899BE0DDB370F735A04A" >> /usr/local/etc/tor/torrc
-echo "DirAuthority CharlieAuthority orport=5002 v3ident=DF9F0F13D1C88E69C17E4956D5306D9246B15999 172.18.0.101:7002 E848FCF17605E4238716F13CC90EF26338330CF1" >> /usr/local/etc/tor/torrc
-echo "DirAuthority DeltaAuthority bridge orport=5003 v3ident=808E16F28AA1EA7F7203863A8245364E4436CB37 172.19.0.101:7003 22449978C1AE15D0B40C0036AB33CCA2C6C1609A" >> /usr/local/etc/tor/torrc
-
 OLDIFS=$IFS
 IFS=,
 while read nickname flags address fingerprint
-do 
-    echo "DirAuthority $nickname $flags $address $fingerprint" >> /usr/local/etc/tor/torrc
+do
+
+	echo "DirAuthority $nickname $flags $address $fingerprint" >> /usr/local/etc/tor/torrc
+
 done < dirauth.csv
 IFS=$OLDIFS
 
@@ -96,18 +89,20 @@ echo "By default we do not allow exit policies for relays (this content is stati
 echo "Should this node be an exit node? (y,n)" REPLY
 
 if [ "${REPLY,,}" == "y" ]; then
-	
+
 	echo "ExitPolicy accept 172.16.0.0/16:*" >> /usr/local/etc/tor/torrc
 	echo "ExitPolicy accept 172.17.0.0/16:*" >> /usr/local/etc/tor/torrc
 	echo "ExitPolicy accept 172.18.0.0/16:*" >> /usr/local/etc/tor/torrc
 	echo "ExitPolicy accept 172.19.0.0/16:*" >> /usr/local/etc/tor/torrc
 	echo "ExitPolicy accept [::1]:*" >> /usr/local/etc/tor/torrc
 	echo "IPv6Exit 1" >> /usr/local/etc/tor/torrc
+
 fi
 
 if [ "${REPLY,,}" == "n" ]; then
-	
+
 	echo "ExitPolicy reject *:*" >> /usr/local/etc/tor/torrc
+
 fi
 
 #Contact info for Relay
