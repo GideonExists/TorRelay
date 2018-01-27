@@ -27,9 +27,9 @@ read -p "Do you want to install Tor? (MAKE SURE YOU'RE 100% SURE ABOUT THIS! (y,
 if [ "${REPLY,,}" == "y" ]; then
 	
 	cd ~/home/Downloads/
-	wget "https://www.torproject.org/dist/tor-0.2.8.8.tar.gz"
-	tar -zxvf tor-0.2.8.8.tar.gz
-	cd tor-0.2.8.8/
+	wget "https://www.torproject.org/dist/tor-0.3.2.9.tar.gz"
+	tar -zxvf tor-0.3.2.9.tar.gz
+	cd tor-0.3.2.9/
 	./configure && make && make install
 	mkdir /var/lib/tor
 	touch /usr/local/etc/tor
